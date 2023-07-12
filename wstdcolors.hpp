@@ -1,16 +1,18 @@
 #include "DearImGui.hpp"
 
 
-auto Blue = ImColor::HSV(2.04f / 3.6f, 0.83f, 0.64f);
-auto BlueBr = ImColor::HSV(2.04f / 3.6f, 0.83f, 0.84f);
-auto Green = ImColor::HSV(1.6f / 3.6f, 0.77f, 0.64f);
-auto GreenBr = ImColor::HSV(1.6f / 3.6f, 0.77f, 0.74f);
-auto GreenDr = ImColor::HSV(1.6f / 3.6f, 0.77f, 0.44f);
-auto Red = ImColor::HSV(0.03f / 3.6f, 0.76f, 0.74f);
-auto RedBr = ImColor::HSV(0.03f / 3.6f, 0.76f, 0.84f);
-auto Yellow = ImColor::HSV(0.47f / 3.6f, 0.75f, 0.64f);
+auto Blue     = ImColor::HSV(2.04f / 3.6f, 0.83f, 0.64f);
+auto BlueBr   = ImColor::HSV(2.04f / 3.6f, 0.83f, 0.84f);
+auto Green    = ImColor::HSV(1.6f  / 3.6f, 0.77f, 0.64f);
+auto GreenBr  = ImColor::HSV(1.6f  / 3.6f, 0.77f, 0.74f);
+auto GreenDr  = ImColor::HSV(1.6f  / 3.6f, 0.77f, 0.44f);
+auto Red      = ImColor::HSV(0.03f / 3.6f, 0.76f, 0.74f);
+auto RedBr    = ImColor::HSV(0.03f / 3.6f, 0.76f, 0.84f);
+auto Yellow   = ImColor::HSV(0.47f / 3.6f, 0.75f, 0.64f);
 auto YellowBr = ImColor::HSV(0.47f / 3.6f, 0.75f, 0.84f);
-
+auto Grey     = ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
+auto GreyBr   = ImVec4(0.4f, 0.4f, 0.4f, 1.0f);
+auto WhiteDr  = ImVec4(0.8f, 0.8f, 0.8f, 0.8f);
 
 ImVec4 ColorBright(ImVec4 color, float bright)
 {
@@ -86,6 +88,10 @@ ImVec4 ColorMid(ImVec4 high_col, ImVec4 mid_col, ImVec4 low_col, float bright, f
                 (mid_col.w + (low_col.w * fabs(comp)) )/(1 + fabs(comp))
             );
             return outcol;
+        }
+        else
+        {
+            return ImVec4();
         }
     }
 }
