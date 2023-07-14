@@ -1,6 +1,9 @@
 #include "DearImGui.hpp"
 
 
+auto WstdTitleBgActive = ImColor::HSV(3.31f / 3.6f, 0.64f, 0.40f);
+auto WstdWindowBg = ImColor::HSV(3.31f / 3.6f, 0.64f, 0.10f);
+
 auto Blue     = ImColor::HSV(2.04f / 3.6f, 0.83f, 0.64f);
 auto BlueBr   = ImColor::HSV(2.04f / 3.6f, 0.83f, 0.84f);
 auto BlueDr   = ImColor::HSV(2.04f / 3.6f, 0.83f, 0.44f);
@@ -15,11 +18,12 @@ auto YellowBr = ImColor::HSV(0.47f / 3.6f, 0.75f, 0.84f);
 auto YellowDr = ImColor::HSV(0.47f / 3.6f, 0.75f, 0.44f);
 auto Grey     = ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
 auto GreyBr   = ImVec4(0.4f, 0.4f, 0.4f, 1.0f);
-auto WhiteDr  = ImVec4(0.8f, 0.8f, 0.8f, 0.8f);
+auto WhiteDr  = ImVec4(0.8f, 0.8f, 0.8f, 0.6f);
+auto TextClr  = ImVec4(0.85f, 0.85f, 0.85f, 0.85f);
 
-ImVec4 ColorBright(ImVec4 color, float bright)
+ImVec4 ColorBright(ImVec4 color, float bright, bool grey = true)
 {
-    if (bright > -15.0f)
+    if (bright > -15.0f || not grey)
     {
         auto perc = bright / 100.0f;
 
@@ -46,8 +50,8 @@ ImVec4 ColorBright(ImVec4 color, float bright)
 
 ImVec4 ColorMid(ImVec4 high_col, ImVec4 mid_col, ImVec4 low_col, float bright, float freq)
 {
+    auto mix_col = ImVec4();
     auto perc = bright / 100.0f;
-
     auto comp = (log(freq / 313.3f) / log(5705.6f / 313.3f)) * 2.0f - 1.0f;
 
     if (bright == -15.0f)
@@ -73,29 +77,17 @@ ImVec4 ColorMid(ImVec4 high_col, ImVec4 mid_col, ImVec4 low_col, float bright, f
             return outcol;
         }
         else if (comp > 0.0f)
-        {
-            auto outcol = ImVec4(
-                (mid_col.x + (high_col.x * comp) )/(1 + comp) + perc,
-                (mid_col.y + (high_col.y * comp) )/(1 + comp) + perc,
-                (mid_col.z + (high_col.z * comp) )/(1 + comp) + perc,
-                (mid_col.w + (high_col.w * comp) )/(1 + comp)
-            );
-            return outcol;
-        }
+            mix_col = high_col;
         else if (comp < 0.0f)
-        {
-            auto outcol = ImVec4(
-                (mid_col.x + (low_col.x * fabs(comp)) )/(1 + fabs(comp)) + perc,
-                (mid_col.y + (low_col.y * fabs(comp)) )/(1 + fabs(comp)) + perc,
-                (mid_col.z + (low_col.z * fabs(comp)) )/(1 + fabs(comp)) + perc,
-                (mid_col.w + (low_col.w * fabs(comp)) )/(1 + fabs(comp))
-            );
-            return outcol;
-        }
-        else
-        {
-            return ImVec4();
-        }
+            mix_col  = low_col;
+
+        auto outcol = ImVec4(
+            (mid_col.x + (mix_col.x * fabs(comp)) )/(1 + fabs(comp)) + perc,
+            (mid_col.y + (mix_col.y * fabs(comp)) )/(1 + fabs(comp)) + perc,
+            (mid_col.z + (mix_col.z * fabs(comp)) )/(1 + fabs(comp)) + perc,
+            (mid_col.w + (mix_col.w * fabs(comp)) )/(1 + fabs(comp))
+        );
+        return outcol;
     }
 }
 
@@ -126,4 +118,13 @@ ImVec4 ColorMix(ImVec4 source_col, ImVec4 mix_col, float bright, float mix_val)
             );
         return outcol;
     }
+}
+
+void CenterTextX(const char *text, float objectWidth)
+{
+    ImVec2 textSize = ImGui::CalcTextSize(text);
+    auto margin = ((objectWidth) - (textSize.x))/ 2.0f;
+    ImGui::Dummy(ImVec2(margin, 0.0f)); ImGui::SameLine();
+    ImGui::Text(text); ImGui::SameLine();
+    ImGui::Dummy(ImVec2(margin, 0.0f));
 }
